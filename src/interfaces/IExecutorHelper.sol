@@ -236,4 +236,10 @@ interface IExecutorHelper {
     bytes memory data,
     uint256 previousAmountOut
   ) external payable returns (uint256);
+
+  function executeMuteSwitchSwap(
+    uint256 index,
+    bytes memory data,
+    uint256 previousAmountOut
+  ) external payable returns (uint256);
 }

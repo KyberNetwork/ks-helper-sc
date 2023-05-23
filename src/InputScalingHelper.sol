@@ -195,6 +195,8 @@ contract InputScalingHelper {
         swap.data = ScalingDataLib.newFrax(swap.data, oldAmount, newAmount);
       } else if (functionSelector == IExecutorHelper.executePlatypusSwap.selector) {
         swap.data = ScalingDataLib.newPlatypus(swap.data, oldAmount, newAmount);
+      } else if (functionSelector == IExecutorHelper.executeMuteSwitchSwap.selector) {
+        swap.data = ScalingDataLib.newUniSwap(swap.data, oldAmount, newAmount);
       } else revert('AggregationExecutor: Dex type not supported');
     }
     return abi.encode(executorDesc);
