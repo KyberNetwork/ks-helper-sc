@@ -106,3 +106,5 @@ dist
 # ignored folders
 cache/
 out/
+
+.DS_Store

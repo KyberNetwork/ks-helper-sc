@@ -48,14 +48,10 @@ contract InputScalingHelper {
     uint256 newAmount
   ) external pure returns (bytes memory) {
     bytes4 selector = bytes4(inputData[:4]);
-    bytes memory dataToDecode = new bytes(inputData.length - 4);
-    for (uint256 i = 0; i < inputData.length - 4; ++i) {
-      dataToDecode[i] = inputData[i + 4];
-    }
 
     if (selector == IMetaAggregationRouterV2.swap.selector) {
       IMetaAggregationRouterV2.SwapExecutionParams memory params = abi.decode(
-        dataToDecode,
+        inputData[4:],
         (IMetaAggregationRouterV2.SwapExecutionParams)
       );
 
@@ -73,7 +69,7 @@ contract InputScalingHelper {
         bytes memory targetData,
         bytes memory clientData
       ) = abi.decode(
-          dataToDecode,
+          inputData[4:],
           (address, IMetaAggregationRouterV2.SwapDescriptionV2, bytes, bytes)
         );
 
