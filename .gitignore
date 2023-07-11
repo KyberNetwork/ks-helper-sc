@@ -68,10 +68,6 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-.env.test
-
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
@@ -103,6 +99,16 @@ dist
 # TernJS port file
 .tern-port
 
+# OS file
+.DS_Store
+
 # ignored folders
 cache/
 out/
+
+# Environment
+.env
+bin
+typechain
+broadcast
+.vscode
