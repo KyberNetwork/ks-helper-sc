@@ -7,6 +7,10 @@ from oldAmount to newAmount of swap amount
 
 `ScalingDataLib`: Library to scale swap amount of each dex in the route
 
+`InputScalingHelperL2`: **(For Arbitrum, Optimism)** Main contract to scale the swap data of Kyber's router (MetaAggregationRouterV2), 
+from oldAmount to newAmount of swap amount
+
+`ScalingDataL2Lib`: **(For Arbitrum, Optimism)** Library to scale swap amount of each dex in the route
 ## How to use
 Function `getScaledInputData` in the `InputScalingHelper` contract
 - Input:

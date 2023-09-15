@@ -6,6 +6,19 @@ import {IExecutorHelper} from './interfaces/IExecutorHelper.sol';
 import {IMetaAggregationRouterV2} from './interfaces/IMetaAggregationRouterV2.sol';
 import {ScalingDataLib} from './ScalingDataLib.sol';
 
+/* ----------------------------------------
+.__   __.   ______   .___________. _______ 
+|  \ |  |  /  __  \  |           ||   ____|
+|   \|  | |  |  |  | `---|  |----`|  |__   
+|  . `  | |  |  |  |     |  |     |   __|  
+|  |\   | |  `--'  |     |  |     |  |____ 
+|__| \__|  \______/      |__|     |_______|
+
+
+Please use InputScalingHelperL2 contract for scaling data on Arbitrum, Optimism
+
+---------------------------------------- */
+
 contract InputScalingHelper {
   uint256 private constant _PARTIAL_FILL = 0x01;
   uint256 private constant _REQUIRES_EXTRA_ETH = 0x02;
@@ -182,11 +195,11 @@ contract InputScalingHelper {
       } else if (functionSelector == IExecutorHelper.executeSynthetix.selector) {
         swap.data = ScalingDataLib.newSynthetix(swap.data, oldAmount, newAmount);
       } else if (functionSelector == IExecutorHelper.executeHashflow.selector) {
-        revert('InputScalingHelper: Can not scale RFQ swap');
+        revert('InputScalingHelper: Can not scale Hasflow swap');
       } else if (functionSelector == IExecutorHelper.executeCamelot.selector) {
         swap.data = ScalingDataLib.newCamelot(swap.data, oldAmount, newAmount);
       } else if (functionSelector == IExecutorHelper.executeKyberLimitOrder.selector) {
-        revert('InputScalingHelper: Can not scale RFQ swap');
+        revert('InputScalingHelper: Can not scale KyberLO swap');
       } else if (functionSelector == IExecutorHelper.executePSM.selector) {
         swap.data = ScalingDataLib.newPSM(swap.data, oldAmount, newAmount);
       } else if (functionSelector == IExecutorHelper.executeFrax.selector) {

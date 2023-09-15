@@ -1,0 +1,22 @@
+name: lint
+
+on: [workflow_dispatch, pull_request]
+
+jobs:
+  lint:
+    name: Kyber Helper SC Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Run lint
+        run: |
+          forge fmt --check
+        id: lint

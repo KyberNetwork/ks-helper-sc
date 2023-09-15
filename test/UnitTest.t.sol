@@ -29,7 +29,7 @@ contract UniswapTest is BaseInputScalingTest {
 
     //scaled swap
     vm.revertTo(snapshot);
-    uint256 newAmount = 11000 ether;
+    uint256 newAmount = 11_000 ether;
     bytes memory newData = scaleHelper.getScaledInputData(inputData, newAmount);
     uint256 afterResult = _swap(newData, newAmount);
     console.log(initialResult, afterResult);
