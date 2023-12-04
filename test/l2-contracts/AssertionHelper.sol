@@ -184,6 +184,8 @@ contract AssertionHelper is Test {
       fn = assertVelocoreV2Data;
     } else if (dexType == InputScalingHelperL2.DexIndex.Kokonut) {
       fn = assertKokonutData;
+    } else if (dexType == InputScalingHelperL2.DexIndex.BalancerV1) {
+      fn = assertBalancerV1Data;
     } else {
       fn = assertNothing;
       // do nothing, since we need to check revert condition from InputScalingHelperL2 contract
@@ -521,6 +523,23 @@ contract AssertionHelper is Test {
     IExecutorHelperL2.Kokonut memory data = abi.decode(depacked, (IExecutorHelperL2.Kokonut));
 
     assertEq(data.dx, mockParams.amount * newAmount / oldAmount);
+  }
+
+  function assertBalancerV1Data(
+    bytes memory dexData,
+    uint256 newAmount,
+    uint256 oldAmount
+  ) internal {
+    bytes memory depacked = reader.readBalancerV1({
+      data: dexData,
+      tokenIn: mockParams.srcToken,
+      isFirstDex: true,
+      nextPool: MOCK_ADDRESS,
+      getPoolOnly: false
+    });
+    IExecutorHelperL2.BalancerV1 memory data = abi.decode(depacked, (IExecutorHelperL2.BalancerV1));
+
+    assertEq(data.amount, mockParams.amount * newAmount / oldAmount);
   }
 
   function excludeSighash(bytes calldata rawData) external returns (bytes memory) {

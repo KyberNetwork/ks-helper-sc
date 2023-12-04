@@ -450,4 +450,21 @@ contract DexScalersTest is Test {
     assertTrue(compressed.length == scaled.length, 'data should not change length');
     assertEq(swapScaled.dx, (swap.dx * newAmount) / oldAmount, 'results are not eq');
   }
+
+  function test_scaleBalancerV1(uint128 oldAmount, uint128 newAmount, uint8 recipientFlag) public {
+    _assumeConditions(oldAmount, newAmount, recipientFlag);
+    IExecutorHelperL2.BalancerV1 memory swap;
+    swap.amount = oldAmount;
+
+    bytes memory compressed = writer.writeBalancerV1(swap, 1, 0, recipientFlag);
+    bytes memory scaled = compressed.newBalancerV1(oldAmount, newAmount);
+
+    IExecutorHelperL2.BalancerV1 memory swapScaled = abi.decode(
+      reader.readBalancerV1(scaled, MOCK_ADDRESS, true, MOCK_ADDRESS, false),
+      (IExecutorHelperL2.BalancerV1)
+    );
+
+    assertTrue(compressed.length == scaled.length, 'data should not change length');
+    assertEq(swapScaled.amount, (swap.amount * newAmount) / oldAmount, 'results are not eq');
+  }
 }

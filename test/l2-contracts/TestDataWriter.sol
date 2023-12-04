@@ -152,6 +152,8 @@ contract TestDataWriter is AssertionHelper {
       fn = _createVelocoreV2;
     } else if (dexType == InputScalingHelperL2.DexIndex.Kokonut) {
       fn = _createKokonut;
+    } else if (dexType == InputScalingHelperL2.DexIndex.BalancerV1) {
+      fn = _createBalancerV1;
     } else {
       // do nothing, since we need to check revert condition from InputScalingHelperL2 contract
       swap.data = bytes('mock data');
@@ -404,6 +406,17 @@ contract TestDataWriter is AssertionHelper {
     IExecutorHelperL2.Kokonut memory data;
     data.dx = mockParams.amount;
     swap.data = writer.writeKokonut({
+      swap: data,
+      poolIndex: 0,
+      sequenceIndex: sequenceIndex,
+      recipientFlag: mockParams.recipientFlag
+    });
+  }
+
+  function _createBalancerV1(uint256 sequenceIndex) internal returns (IExecutorL2.Swap memory swap) {
+    IExecutorHelperL2.BalancerV1 memory data;
+    data.amount = mockParams.amount;
+    swap.data = writer.writeBalancerV1({
       swap: data,
       poolIndex: 0,
       sequenceIndex: sequenceIndex,

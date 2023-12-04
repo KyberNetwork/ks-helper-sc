@@ -63,7 +63,8 @@ contract InputScalingHelperL2 {
     VelocoreV2,
     Smardex,
     SolidlyV2,
-    Kokonut
+    Kokonut,
+    BalancerV1
   }
 
   function getScaledInputData(
@@ -310,6 +311,8 @@ contract InputScalingHelperL2 {
       swap.data = swap.data.newMantis(oldAmount, newAmount); // @dev use identical calldata structure as Mantis
     } else if (DexIndex(functionSelectorIndex) == DexIndex.Kokonut) {
       swap.data = swap.data.newKokonut(oldAmount, newAmount);
+    } else if (DexIndex(functionSelectorIndex) == DexIndex.BalancerV1) {
+      swap.data = swap.data.newBalancerV1(oldAmount, newAmount);
     } else {
       revert('InputScaleHelper: Dex type not supported');
     }

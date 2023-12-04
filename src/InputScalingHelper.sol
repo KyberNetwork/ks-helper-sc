@@ -242,6 +242,8 @@ contract InputScalingHelper {
         swap.data = ScalingDataLib.newMantis(swap.data, oldAmount, newAmount); // @dev using Mantis struct because Solidly V2 and Mantis have same fields
       } else if (functionSelector == IExecutorHelper.executeKokonut.selector) {
         swap.data = ScalingDataLib.newKokonut(swap.data, oldAmount, newAmount);
+      } else if (functionSelector == IExecutorHelper.executeBalancerV1.selector) {
+        swap.data = ScalingDataLib.newBalancerV1(swap.data, oldAmount, newAmount);
       } else {
         revert('AggregationExecutor: Dex type not supported');
       }

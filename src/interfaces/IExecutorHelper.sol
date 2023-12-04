@@ -212,9 +212,12 @@ interface IExecutorHelper {
 
   struct VelocoreV2 {
     address vault;
+    uint256 amount;
     address tokenIn;
     address tokenOut;
-    uint256 amount;
+    address stablePool; // if not empty then use stable pool
+    address wrapToken;
+    bool isConvertFirst;
   }
 
   struct MaticMigrate {
@@ -230,6 +233,13 @@ interface IExecutorHelper {
     uint256 tokenIndexFrom;
     address fromToken;
     address toToken;
+  }
+
+  struct BalancerV1 {
+    address pool;
+    uint256 amount;
+    address tokenIn;
+    address tokenOut;
   }
 
   function executeUniswap(
@@ -413,6 +423,11 @@ interface IExecutorHelper {
   ) external payable returns (uint256);
 
   function executeKokonut(
+    bytes memory data,
+    uint256 flagsAndPrevAmountOut
+  ) external payable returns (uint256);
+
+  function executeBalancerV1(
     bytes memory data,
     uint256 flagsAndPrevAmountOut
   ) external payable returns (uint256);

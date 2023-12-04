@@ -466,10 +466,13 @@ contract DexWriter {
     shortData = bytes.concat(shortData, bytes3(uint24(poolIndex)));
     if (poolIndex == 0) shortData = bytes.concat(shortData, bytes20(swap.vault));
 
-    shortData = bytes.concat(shortData, bytes20(swap.tokenOut));
-
     if (sequenceIndex == 0) shortData = bytes.concat(shortData, bytes16(uint128(swap.amount)));
     else shortData = bytes.concat(shortData, bytes1(swap.amount > 0 ? 1 : 0));
+
+    shortData = bytes.concat(shortData, bytes20(swap.tokenOut));
+    shortData = bytes.concat(shortData, bytes20(swap.stablePool));
+    shortData = bytes.concat(shortData, bytes20(swap.wrapToken));
+    shortData = bytes.concat(shortData, bytes1(swap.isConvertFirst ? 1 : 0));
   }
 
   function writeKokonut(
@@ -485,6 +488,21 @@ contract DexWriter {
     else shortData = bytes.concat(shortData, bytes1(swap.dx > 0 ? 1 : 0));
 
     shortData = bytes.concat(shortData, bytes1(uint8(swap.tokenIndexFrom)));
+  }
+
+  function writeBalancerV1(
+    IExecutorHelperL2.BalancerV1 memory swap,
+    uint256 poolIndex,
+    uint256 sequenceIndex,
+    uint8 recipientFlag
+  ) external pure returns (bytes memory shortData) {
+    shortData = bytes.concat(shortData, bytes3(uint24(poolIndex)));
+    if (poolIndex == 0) shortData = bytes.concat(shortData, bytes20(swap.pool));
+
+    if (sequenceIndex == 0) shortData = bytes.concat(shortData, bytes16(uint128(swap.amount)));
+    else shortData = bytes.concat(shortData, bytes1(swap.amount > 0 ? 1 : 0));
+
+    shortData = bytes.concat(shortData, bytes20(swap.tokenOut));
   }
 
   /*

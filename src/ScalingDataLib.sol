@@ -300,4 +300,14 @@ library ScalingDataLib {
     kokonut.dx = (kokonut.dx * newAmount) / oldAmount;
     return abi.encode(kokonut);
   }
+
+  function newBalancerV1(
+    bytes memory data,
+    uint256 oldAmount,
+    uint256 newAmount
+  ) internal pure returns (bytes memory) {
+    IExecutorHelper.BalancerV1 memory balancerV1 = abi.decode(data, (IExecutorHelper.BalancerV1));
+    balancerV1.amount = (balancerV1.amount * newAmount) / oldAmount;
+    return abi.encode(balancerV1);
+  }
 }
