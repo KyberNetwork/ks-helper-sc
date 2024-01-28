@@ -24,7 +24,7 @@ library CalldataWriter {
    ************************ AggregationExecutor ************************
    */
   function writeSwapExecutorDescription(IExecutorHelperL2.SwapExecutorDescription memory desc)
-    external
+    internal
     pure
     returns (bytes memory shortData)
   {
