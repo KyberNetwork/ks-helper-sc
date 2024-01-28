@@ -76,7 +76,7 @@ contract InputScalingHelperL2 {
   function getScaledInputData(
     bytes calldata inputData,
     uint256 newAmount
-  ) external view returns (bytes memory) {
+  ) external pure returns (bytes memory) {
     bytes4 selector = bytes4(inputData[:4]);
     bytes calldata dataToDecode = inputData[4:];
 
@@ -337,7 +337,7 @@ contract InputScalingHelperL2 {
     return swap;
   }
 
-  function _flagsChecked(uint256 number, uint256 flag) internal view returns (bool) {
+  function _flagsChecked(uint256 number, uint256 flag) internal pure returns (bool) {
     return number & flag != 0;
   }
 }
