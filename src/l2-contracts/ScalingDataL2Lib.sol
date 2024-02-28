@@ -3,6 +3,7 @@ pragma solidity 0.8.9;
 
 import {IExecutorHelper} from '../interfaces/IExecutorHelper.sol';
 import {DexScaler} from './DexScaler.sol';
+import 'forge-std/console.sol';
 
 library ScalingDataL2Lib {
   using DexScaler for bytes;
@@ -11,7 +12,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleUniSwap(oldAmount, newAmount);
   }
 
@@ -19,7 +20,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleStableSwap(oldAmount, newAmount);
   }
 
@@ -27,7 +28,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleCurveSwap(oldAmount, newAmount);
   }
 
@@ -35,7 +36,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleUniSwap(oldAmount, newAmount);
   }
 
@@ -43,7 +44,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleUniswapV3KSElastic(oldAmount, newAmount);
   }
 
@@ -51,7 +52,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleBalancerV2(oldAmount, newAmount);
   }
 
@@ -59,7 +60,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleDODO(oldAmount, newAmount);
   }
 
@@ -67,7 +68,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleUniSwap(oldAmount, newAmount);
   }
 
@@ -75,7 +76,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleGMX(oldAmount, newAmount);
   }
 
@@ -83,7 +84,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleSynthetix(oldAmount, newAmount);
   }
 
@@ -91,7 +92,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleUniSwap(oldAmount, newAmount);
   }
 
@@ -99,7 +100,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scalePlatypus(oldAmount, newAmount);
   }
 
@@ -107,7 +108,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleWrappedstETH(oldAmount, newAmount);
   }
 
@@ -115,7 +116,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scalePSM(oldAmount, newAmount);
   }
 
@@ -123,7 +124,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleUniSwap(oldAmount, newAmount);
   }
 
@@ -131,7 +132,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleStETH(oldAmount, newAmount);
   }
 
@@ -139,7 +140,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleMaverick(oldAmount, newAmount);
   }
 
@@ -147,7 +148,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleSyncSwap(oldAmount, newAmount);
   }
 
@@ -155,7 +156,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleAlgebraV1(oldAmount, newAmount);
   }
 
@@ -163,7 +164,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleBalancerBatch(oldAmount, newAmount);
   }
 
@@ -171,7 +172,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleMantis(oldAmount, newAmount);
   }
 
@@ -179,7 +180,8 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
+    console.log('new izi swap');
     return data.scaleIziSwap(oldAmount, newAmount);
   }
 
@@ -187,7 +189,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleTraderJoeV2(oldAmount, newAmount);
   }
 
@@ -195,7 +197,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleLevelFiV2(oldAmount, newAmount);
   }
 
@@ -203,7 +205,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleGMXGLP(oldAmount, newAmount);
   }
 
@@ -211,7 +213,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleVooi(oldAmount, newAmount);
   }
 
@@ -219,7 +221,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleVelocoreV2(oldAmount, newAmount);
   }
 
@@ -227,7 +229,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleKokonut(oldAmount, newAmount);
   }
 
@@ -235,7 +237,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleBalancerV1(oldAmount, newAmount);
   }
 
@@ -243,7 +245,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleArbswapStable(oldAmount, newAmount);
   }
 
@@ -251,7 +253,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleBancorV2(oldAmount, newAmount);
   }
 
@@ -259,7 +261,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleAmbient(oldAmount, newAmount);
   }
 
@@ -267,7 +269,7 @@ library ScalingDataL2Lib {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     return data.scaleLighterV2(oldAmount, newAmount);
   }
 }

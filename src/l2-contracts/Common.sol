@@ -1,6 +1,8 @@
 pragma solidity 0.8.9;
 
 import './CalldataReader.sol';
+import 'forge-std/console.sol';
+
 
 library Common {
   using CalldataReader for bytes;
@@ -18,12 +20,24 @@ library Common {
   function _readRecipient(
     bytes memory data,
     uint256 startByte
-  ) internal pure returns (address, uint256) {
+  ) internal view returns (address, uint256) {
     uint8 recipientFlag;
     address recipient;
+
+    console.log('check recipient ');
     (recipientFlag, startByte) = data._readUint8(startByte);
+
+
+
+    console.log('recipientFlag ', recipientFlag);
+
+
+
     if (recipientFlag != 2 && recipientFlag != 1) {
+      console.log('startByte ', startByte);
+      console.logBytes(data);
       (recipient, startByte) = data._readAddress(startByte);
+      console.log('recipient ', recipient);
     }
     return (recipient, startByte);
   }

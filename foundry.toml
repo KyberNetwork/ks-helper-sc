@@ -13,3 +13,7 @@ bracket_spacing = false
 int_types = 'long'
 quote_style = 'single'
 multiline_func_header = 'params_first'
+
+
+[rpc_endpoints]
+arbitrum_mainnet = 'https://arbitrum.drpc.org'

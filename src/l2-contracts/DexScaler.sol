@@ -5,6 +5,8 @@ import './CalldataReader.sol';
 import '../interfaces/IExecutorHelperL2.sol';
 import {BytesHelper} from './BytesHelper.sol';
 import {Common} from './Common.sol';
+import 'forge-std/console.sol';
+
 
 /// @title DexScaler
 /// @notice Contain functions to scale DEX structs
@@ -18,7 +20,7 @@ library DexScaler {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     uint256 startByte;
     // decode
     (, startByte) = data._readPool(startByte);
@@ -67,7 +69,7 @@ library DexScaler {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     uint256 startByte;
     (, startByte) = data._readRecipient(startByte);
     (, startByte) = data._readPool(startByte);
@@ -98,7 +100,7 @@ library DexScaler {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     uint256 startByte;
     (, startByte) = data._readRecipient(startByte);
     (, startByte) = data._readPool(startByte);
@@ -174,7 +176,7 @@ library DexScaler {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     uint256 startByte;
 
     // decode
@@ -213,7 +215,7 @@ library DexScaler {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     uint256 startByte;
 
     // decode
@@ -252,7 +254,7 @@ library DexScaler {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     uint256 startByte;
 
     (, startByte) = data._readRecipient(startByte);
@@ -309,15 +311,25 @@ library DexScaler {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
+
+    console.log('start trace scaleIziSwap');
     uint256 startByte;
 
     (, startByte) = data._readPool(startByte); // pool
+        console.log('pool pass');
+
 
     (, startByte) = data._readAddress(startByte); // tokenOut
 
+        console.log('tokenout pass');
+
+
     // recipient
     (, startByte) = data._readRecipient(startByte);
+
+            console.log('recipient pass');
+
 
     (uint256 swapAmount,) = data._readUint128AsUint256(startByte); // amount
     return data.write16Bytes(
@@ -329,7 +341,7 @@ library DexScaler {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     uint256 startByte;
 
     // recipient

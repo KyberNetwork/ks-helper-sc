@@ -10,6 +10,8 @@ import {ScalingDataL2Lib} from './ScalingDataL2Lib.sol';
 import {ExecutorReader} from './ExecutorReader.sol';
 import {CalldataWriter} from './CalldataWriter.sol';
 
+import 'forge-std/console.sol';
+
 contract InputScalingHelperL2 {
   using ExecutorReader for bytes;
   using ScalingDataL2Lib for bytes;
@@ -47,12 +49,12 @@ contract InputScalingHelperL2 {
     Platypus,
     PSM,
     Maverick,
-    SyncSwap,
+    SyncSwap, // 20
     AlgebraV1,
     BalancerBatch,
     Mantis,
     Wombat,
-    iZiSwap,
+    iZiSwap, // 25
     TraderJoeV2,
     WooFiV2,
     KyberDSLO,
@@ -79,7 +81,7 @@ contract InputScalingHelperL2 {
   function getScaledInputData(
     bytes calldata inputData,
     uint256 newAmount
-  ) external pure returns (bytes memory) {
+  ) external view returns (bytes memory) {
     bytes4 selector = bytes4(inputData[:4]);
     bytes calldata dataToDecode = inputData[4:];
 
@@ -87,9 +89,11 @@ contract InputScalingHelperL2 {
       IMetaAggregationRouterV2.SwapExecutionParams memory params =
         abi.decode(dataToDecode, (IMetaAggregationRouterV2.SwapExecutionParams));
 
+      console.log('1');
       (params.desc, params.targetData) = _getScaledInputDataV2(
         params.desc, params.targetData, newAmount, _flagsChecked(params.desc.flags, _SIMPLE_SWAP)
       );
+
       return abi.encodeWithSelector(selector, params);
     } else if (selector == IMetaAggregationRouterV2.swapSimpleMode.selector) {
       (
@@ -113,7 +117,7 @@ contract InputScalingHelperL2 {
     bytes memory executorData,
     uint256 newAmount,
     bool isSimpleMode
-  ) internal pure returns (IMetaAggregationRouterV2.SwapDescriptionV2 memory, bytes memory) {
+  ) internal view returns (IMetaAggregationRouterV2.SwapDescriptionV2 memory, bytes memory) {
     uint256 oldAmount = desc.amount;
     if (oldAmount == newAmount) {
       return (desc, executorData);
@@ -128,6 +132,7 @@ contract InputScalingHelperL2 {
     }
 
     //normal mode swap
+    console.log('2');
     return (
       _scaledSwapDescriptionV2(desc, oldAmount, newAmount),
       _scaledExecutorCallBytesData(executorData, oldAmount, newAmount)
@@ -139,7 +144,7 @@ contract InputScalingHelperL2 {
     IMetaAggregationRouterV2.SwapDescriptionV2 memory desc,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (IMetaAggregationRouterV2.SwapDescriptionV2 memory) {
+  ) internal view returns (IMetaAggregationRouterV2.SwapDescriptionV2 memory) {
     desc.minReturnAmount = (desc.minReturnAmount * newAmount) / oldAmount;
     if (desc.minReturnAmount == 0) desc.minReturnAmount = 1;
     desc.amount = desc.amount * newAmount / oldAmount;
@@ -151,6 +156,8 @@ contract InputScalingHelperL2 {
         ++i;
       }
     }
+    console.log('3');
+
     return desc;
   }
 
@@ -159,7 +166,7 @@ contract InputScalingHelperL2 {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     IMetaAggregationRouterV2.SimpleSwapData memory simpleSwapData =
       abi.decode(data, (IMetaAggregationRouterV2.SimpleSwapData));
     uint256 nPools = simpleSwapData.firstPools.length;
@@ -197,18 +204,27 @@ contract InputScalingHelperL2 {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
+    console.log('4');
+
     IExecutorHelperL2.SwapExecutorDescription memory executorDesc =
       abi.decode(data.readSwapExecutorDescription(), (IExecutorHelperL2.SwapExecutorDescription));
 
+          console.log('5');
+
+
     executorDesc.positiveSlippageData =
       _scaledPositiveSlippageFeeData(executorDesc.positiveSlippageData, oldAmount, newAmount);
+
+          console.log('6');
 
     uint256 nSequences = executorDesc.swapSequences.length;
     for (uint256 i = 0; i < nSequences;) {
       // only need to scale the first dex in each sequence
       IExecutorHelperL2.Swap memory swap = executorDesc.swapSequences[i][0];
       executorDesc.swapSequences[i][0] = _scaleDexData(swap, oldAmount, newAmount);
+                console.log('7');
+
       unchecked {
         ++i;
       }
@@ -243,8 +259,11 @@ contract InputScalingHelperL2 {
     IExecutorHelperL2.Swap memory swap,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (IExecutorHelperL2.Swap memory) {
+  ) internal view returns (IExecutorHelperL2.Swap memory) {
     uint8 functionSelectorIndex = uint8(uint32(swap.functionSelector));
+
+    console.log('a');
+    console.log('index ', functionSelectorIndex);
 
     if (DexIndex(functionSelectorIndex) == DexIndex.UNI) {
       swap.data = swap.data.newUniSwap(oldAmount, newAmount);
@@ -297,6 +316,7 @@ contract InputScalingHelperL2 {
     } else if (DexIndex(functionSelectorIndex) == DexIndex.Wombat) {
       swap.data = swap.data.newMantis(oldAmount, newAmount); // @dev use identical calldata structure as Mantis
     } else if (DexIndex(functionSelectorIndex) == DexIndex.iZiSwap) {
+      console.log('scale iZi');
       swap.data = swap.data.newIziSwap(oldAmount, newAmount);
     } else if (DexIndex(functionSelectorIndex) == DexIndex.TraderJoeV2) {
       swap.data = swap.data.newTraderJoeV2(oldAmount, newAmount);
@@ -339,6 +359,7 @@ contract InputScalingHelperL2 {
     } else if (DexIndex(functionSelectorIndex) == DexIndex.LighterV2) {
       swap.data = swap.data.newLighterV2(oldAmount, newAmount);
     } else if (DexIndex(functionSelectorIndex) == DexIndex.Bebop) {
+
       revert('InputScalingHelper: Can not scale Bebop swap');
     } else {
       revert('InputScaleHelper: Dex type not supported');
