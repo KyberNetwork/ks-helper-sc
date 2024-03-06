@@ -1,3 +1,6 @@
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "lib/ks-growth-utils-sc"]
+	path = lib/ks-growth-utils-sc
+	url = https://github.com/KyberNetwork/ks-growth-utils-sc
