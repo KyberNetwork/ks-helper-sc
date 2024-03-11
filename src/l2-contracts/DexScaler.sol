@@ -314,16 +314,15 @@ library DexScaler {
   ) internal view returns (bytes memory) {
 
     console.log('start trace scaleIziSwap');
+    console.logBytes(data);
     uint256 startByte;
 
     (, startByte) = data._readPool(startByte); // pool
-        console.log('pool pass');
+        console.log('start byte tokenout', startByte);
 
 
     (, startByte) = data._readAddress(startByte); // tokenOut
-
-        console.log('tokenout pass');
-
+            console.log('start byte recipient', startByte);
 
     // recipient
     (, startByte) = data._readRecipient(startByte);

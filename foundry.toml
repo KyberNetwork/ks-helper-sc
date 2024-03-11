@@ -16,4 +16,4 @@ multiline_func_header = 'params_first'
 
 
 [rpc_endpoints]
-arbitrum_mainnet = 'https://arbitrum.drpc.org'
+arbitrum_mainnet = 'https://arbitrum-mainnet.infura.io/v3/474d88f0f3bc480b900b6b7a630855b6'
