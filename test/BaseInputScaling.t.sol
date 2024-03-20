@@ -5,6 +5,7 @@ import 'forge-std/Test.sol';
 import 'forge-std/console.sol';
 import 'forge-std/StdJson.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
+import '@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol';
 import '../src/interfaces/IMetaAggregationRouterV2.sol';
 import '../src/interfaces/IAggregationExecutor.sol';
 import '../src/InputScalingHelper.sol';
@@ -18,6 +19,7 @@ contract BaseInputScalingTest is Test {
   IMetaAggregationRouterV2 router;
   InputScalingHelper scaleHelper;
   address alice;
+  ERC1967Proxy proxy;
 
   struct SwapTx {
     uint256 blockNumber;
@@ -88,7 +90,16 @@ contract BaseInputScalingTest is Test {
   function setUp() public {
     swapInputPath = '/test/onchain-data/swap.json';
     routerAddress = 0x6131B5fae19EA4f9D964eAc0408E4408b66337b5;
-    scaleHelper = new InputScalingHelper();
+
+    InputScalingHelper implementation = new InputScalingHelper();
+
+    // deploy proxy contract and point it to implementation
+    proxy = new ERC1967Proxy(address(implementation), '');
+
+    // wrap in ABI to support easier calls
+    scaleHelper = InputScalingHelper(address(proxy));
+    scaleHelper.initialize();
+
     vm.makePersistent(address(scaleHelper));
   }
 }
