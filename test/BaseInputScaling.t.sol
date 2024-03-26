@@ -85,7 +85,7 @@ contract BaseInputScalingTest is Test {
     }
   }
 
-  function setUp() public {
+  function setUp() public virtual {
     swapInputPath = '/test/onchain-data/swap.json';
     routerAddress = 0x6131B5fae19EA4f9D964eAc0408E4408b66337b5;
     scaleHelper = new InputScalingHelper();
