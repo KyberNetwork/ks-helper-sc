@@ -1,6 +1,7 @@
 pragma solidity ^0.8.0;
 
 import {IKyberDSLO} from './pools/IKyberDSLO.sol';
+import {IKyberLO} from './pools/IKyberLO.sol';
 
 interface IExecutorHelperL2Struct {
   struct Swap {
@@ -369,5 +370,12 @@ interface IExecutorHelperL2Struct {
     address tokenIn;
     address tokenOut;
     address recipient;
+  }
+
+  struct KyberLimitOrder {
+    address kyberLOAddress;
+    address makerAsset;
+    address takerAsset;
+    IKyberLO.FillBatchOrdersParams params;
   }
 }

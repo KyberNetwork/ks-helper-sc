@@ -31,56 +31,57 @@ contract InputScalingHelperL2 {
     KyberDMM,
     Velodrome,
     Fraxswap,
-    Camelot,
+    Camelot, // 4
     StableSwap,
     Curve,
     UniswapV3KSElastic,
     BalancerV2,
-    DODO,
+    DODO, // 9
     GMX,
     Synthetix,
     wstETH,
     stETH,
-    Platypus,
+    Platypus, // 14
     PSM,
     Maverick,
     SyncSwap,
     AlgebraV1,
-    BalancerBatch,
+    BalancerBatch, // 19
     Mantis,
     Wombat,
     WooFiV2,
     iZiSwap,
-    TraderJoeV2,
+    TraderJoeV2, // 24
     LevelFiV2,
     GMXGLP,
     PancakeStableSwap,
     Vooi,
-    VelocoreV2,
+    VelocoreV2, // 29
     Smardex,
     SolidlyV2,
     Kokonut,
     BalancerV1,
-    SwaapV2,
+    SwaapV2, // 34
     NomiswapStable,
     ArbswapStable,
     BancorV3,
     BancorV2,
-    Ambient,
+    Ambient, // 39
     Native,
     LighterV2,
     Bebop,
     MaiPSM,
-    Hashflow,
-    KyberLO,
+    Hashflow, // 44
     KyberDSLO,
-    RFQ
+    KyberRFQ,
+    KyberLimitOrder // 47
+
   }
 
   function getScaledInputData(
     bytes calldata inputData,
     uint256 newAmount
-  ) external pure returns (bytes memory) {
+  ) external view returns (bytes memory) {
     bytes4 selector = bytes4(inputData[:4]);
     bytes calldata dataToDecode = inputData[4:];
 
@@ -114,7 +115,7 @@ contract InputScalingHelperL2 {
     bytes memory executorData,
     uint256 newAmount,
     bool isSimpleMode
-  ) internal pure returns (IMetaAggregationRouterV2.SwapDescriptionV2 memory, bytes memory) {
+  ) internal view returns (IMetaAggregationRouterV2.SwapDescriptionV2 memory, bytes memory) {
     uint256 oldAmount = desc.amount;
     if (oldAmount == newAmount) {
       return (desc, executorData);
@@ -160,7 +161,7 @@ contract InputScalingHelperL2 {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     IMetaAggregationRouterV2.SimpleSwapData memory simpleSwapData =
       abi.decode(data, (IMetaAggregationRouterV2.SimpleSwapData));
     uint256 nPools = simpleSwapData.firstPools.length;
@@ -198,7 +199,7 @@ contract InputScalingHelperL2 {
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (bytes memory) {
+  ) internal view returns (bytes memory) {
     IExecutorHelperL2.SwapExecutorDescription memory executorDesc =
       abi.decode(data.readSwapExecutorDescription(), (IExecutorHelperL2.SwapExecutorDescription));
 
@@ -244,7 +245,7 @@ contract InputScalingHelperL2 {
     IExecutorHelperL2.Swap memory swap,
     uint256 oldAmount,
     uint256 newAmount
-  ) internal pure returns (IExecutorHelperL2.Swap memory) {
+  ) internal view returns (IExecutorHelperL2.Swap memory) {
     uint8 functionSelectorIndex = uint8(uint32(swap.functionSelector));
 
     if (DexIndex(functionSelectorIndex) == DexIndex.UNI) {
@@ -326,20 +327,20 @@ contract InputScalingHelperL2 {
       swap.data = swap.data.newLighterV2(oldAmount, newAmount);
     } else if (DexIndex(functionSelectorIndex) == DexIndex.Bebop) {
       swap.data = swap.data.newBebop(oldAmount, newAmount);
-    } else if (DexIndex(functionSelectorIndex) == DexIndex.SwaapV2) {
-      revert('InputScalingHelper: Can not scale SwaapV2 swap');
-    } else if (DexIndex(functionSelectorIndex) == DexIndex.KyberLO) {
-      revert('InputScalingHelper: Can not scale KyberLO swap');
+    } else if (DexIndex(functionSelectorIndex) == DexIndex.KyberLimitOrder) {
+      swap.data = swap.data.newKyberLimitOrder(oldAmount, newAmount);
     } else if (DexIndex(functionSelectorIndex) == DexIndex.MaiPSM) {
       swap.data = swap.data.newMaiPSM(oldAmount, newAmount);
     } else if (DexIndex(functionSelectorIndex) == DexIndex.Native) {
       swap.data = swap.data.newNative(oldAmount, newAmount);
     } else if (DexIndex(functionSelectorIndex) == DexIndex.KyberDSLO) {
-      swap.data = swap.data.newDSLO(oldAmount, newAmount);
+      swap.data = swap.data.newKyberDSLO(oldAmount, newAmount);
     } else if (DexIndex(functionSelectorIndex) == DexIndex.Hashflow) {
       swap.data = swap.data.newHashflow(oldAmount, newAmount);
-    } else if (DexIndex(functionSelectorIndex) == DexIndex.RFQ) {
+    } else if (DexIndex(functionSelectorIndex) == DexIndex.KyberRFQ) {
       swap.data = swap.data.newKyberRFQ(oldAmount, newAmount);
+    } else if (DexIndex(functionSelectorIndex) == DexIndex.SwaapV2) {
+      revert('InputScalingHelper: Can not scale SwaapV2 swap');
     } else {
       revert('InputScaleHelper: Dex type not supported');
     }

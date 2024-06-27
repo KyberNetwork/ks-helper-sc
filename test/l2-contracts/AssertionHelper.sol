@@ -7,6 +7,7 @@ import {IMetaAggregationRouterV2} from 'src/interfaces/IMetaAggregationRouterV2.
 
 import {ExecutorReader} from 'src/l2-contracts/ExecutorReader.sol';
 import {IExecutorHelperL2} from 'src/interfaces/IExecutorHelperL2.sol';
+import {IExecutorHelperL2Struct} from 'src/interfaces/IExecutorHelperL2Struct.sol';
 import {IAggregationExecutorOptimistic as IExecutorL2} from
   'src/interfaces/IAggregationExecutorOptimistic.sol';
 import {Reader} from './DexScalersTest.t.sol';
@@ -191,6 +192,18 @@ contract AssertionHelper is Test {
       fn = assertBancorV2;
     } else if (dexType == InputScalingHelperL2.DexIndex.Ambient) {
       fn = assertAmbient;
+    } else if (dexType == InputScalingHelperL2.DexIndex.Native) {
+      fn = assertNative;
+    } else if (dexType == InputScalingHelperL2.DexIndex.Bebop) {
+      fn = assertBebop;
+    } else if (dexType == InputScalingHelperL2.DexIndex.KyberDSLO) {
+      fn = assertKyberDSLO;
+    } else if (dexType == InputScalingHelperL2.DexIndex.KyberLimitOrder) {
+      fn = assertKyberLimitOrder;
+    } else if (dexType == InputScalingHelperL2.DexIndex.KyberRFQ) {
+      fn = assertKyberRfq;
+    } else if (dexType == InputScalingHelperL2.DexIndex.Hashflow) {
+      fn = assertHashflow;
     } else {
       fn = assertNothing;
       // do nothing, since we need to check revert condition from InputScalingHelperL2 contract
@@ -209,7 +222,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.UniSwap memory data = abi.decode(depacked, (IExecutorHelperL2.UniSwap));
+    IExecutorHelperL2Struct.UniSwap memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.UniSwap));
 
     assertEq(data.collectAmount, mockParams.amount * newAmount / oldAmount);
   }
@@ -225,7 +239,8 @@ contract AssertionHelper is Test {
       isFirstDex: true,
       getPoolOnly: false
     });
-    IExecutorHelperL2.StableSwap memory data = abi.decode(depacked, (IExecutorHelperL2.StableSwap));
+    IExecutorHelperL2Struct.StableSwap memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.StableSwap));
 
     assertEq(data.dx, mockParams.amount * newAmount / oldAmount);
   }
@@ -237,7 +252,8 @@ contract AssertionHelper is Test {
       isFirstDex: true,
       getPoolOnly: false
     });
-    IExecutorHelperL2.CurveSwap memory data = abi.decode(depacked, (IExecutorHelperL2.CurveSwap));
+    IExecutorHelperL2Struct.CurveSwap memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.CurveSwap));
 
     assertEq(data.dx, mockParams.amount * newAmount / oldAmount);
   }
@@ -254,8 +270,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.UniswapV3KSElastic memory data =
-      abi.decode(depacked, (IExecutorHelperL2.UniswapV3KSElastic));
+    IExecutorHelperL2Struct.UniswapV3KSElastic memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.UniswapV3KSElastic));
 
     assertEq(data.swapAmount, mockParams.amount * newAmount / oldAmount);
   }
@@ -271,7 +287,8 @@ contract AssertionHelper is Test {
       isFirstDex: true,
       getPoolOnly: false
     });
-    IExecutorHelperL2.BalancerV2 memory data = abi.decode(depacked, (IExecutorHelperL2.BalancerV2));
+    IExecutorHelperL2Struct.BalancerV2 memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.BalancerV2));
 
     assertEq(data.amount, mockParams.amount * newAmount / oldAmount);
   }
@@ -284,7 +301,7 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.DODO memory data = abi.decode(depacked, (IExecutorHelperL2.DODO));
+    IExecutorHelperL2Struct.DODO memory data = abi.decode(depacked, (IExecutorHelperL2Struct.DODO));
 
     assertEq(data.amount, mockParams.amount * newAmount / oldAmount);
   }
@@ -297,7 +314,7 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.GMX memory data = abi.decode(depacked, (IExecutorHelperL2.GMX));
+    IExecutorHelperL2Struct.GMX memory data = abi.decode(depacked, (IExecutorHelperL2Struct.GMX));
 
     assertEq(data.amount, mockParams.amount * newAmount / oldAmount);
   }
@@ -309,7 +326,8 @@ contract AssertionHelper is Test {
       isFirstDex: true,
       getPoolOnly: false
     });
-    IExecutorHelperL2.Synthetix memory data = abi.decode(depacked, (IExecutorHelperL2.Synthetix));
+    IExecutorHelperL2Struct.Synthetix memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.Synthetix));
 
     assertEq(data.sourceAmount, mockParams.amount * newAmount / oldAmount);
   }
@@ -325,7 +343,8 @@ contract AssertionHelper is Test {
       isFirstDex: true,
       getPoolOnly: false
     });
-    IExecutorHelperL2.WSTETH memory data = abi.decode(depacked, (IExecutorHelperL2.WSTETH));
+    IExecutorHelperL2Struct.WSTETH memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.WSTETH));
 
     assertEq(data.amount, mockParams.amount * newAmount / oldAmount);
   }
@@ -343,7 +362,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.Platypus memory data = abi.decode(depacked, (IExecutorHelperL2.Platypus));
+    IExecutorHelperL2Struct.Platypus memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.Platypus));
 
     assertEq(data.collectAmount, mockParams.amount * newAmount / oldAmount);
   }
@@ -356,7 +376,7 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.PSM memory data = abi.decode(depacked, (IExecutorHelperL2.PSM));
+    IExecutorHelperL2Struct.PSM memory data = abi.decode(depacked, (IExecutorHelperL2Struct.PSM));
 
     assertEq(data.amountIn, mockParams.amount * newAmount / oldAmount);
   }
@@ -369,7 +389,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.Maverick memory data = abi.decode(depacked, (IExecutorHelperL2.Maverick));
+    IExecutorHelperL2Struct.Maverick memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.Maverick));
 
     assertEq(data.swapAmount, mockParams.amount * newAmount / oldAmount);
   }
@@ -381,7 +402,8 @@ contract AssertionHelper is Test {
       isFirstDex: true,
       getPoolOnly: false
     });
-    IExecutorHelperL2.SyncSwap memory data = abi.decode(depacked, (IExecutorHelperL2.SyncSwap));
+    IExecutorHelperL2Struct.SyncSwap memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.SyncSwap));
 
     assertEq(data.collectAmount, mockParams.amount * newAmount / oldAmount);
   }
@@ -394,7 +416,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.AlgebraV1 memory data = abi.decode(depacked, (IExecutorHelperL2.AlgebraV1));
+    IExecutorHelperL2Struct.AlgebraV1 memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.AlgebraV1));
 
     assertEq(data.swapAmount, mockParams.amount * newAmount / oldAmount);
   }
@@ -411,8 +434,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.BalancerBatch memory data =
-      abi.decode(depacked, (IExecutorHelperL2.BalancerBatch));
+    IExecutorHelperL2Struct.BalancerBatch memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.BalancerBatch));
 
     assertEq(data.amountIn, mockParams.amount * newAmount / oldAmount);
   }
@@ -425,7 +448,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.Mantis memory data = abi.decode(depacked, (IExecutorHelperL2.Mantis));
+    IExecutorHelperL2Struct.Mantis memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.Mantis));
 
     assertEq(data.amount, mockParams.amount * newAmount / oldAmount);
   }
@@ -438,7 +462,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.IziSwap memory data = abi.decode(depacked, (IExecutorHelperL2.IziSwap));
+    IExecutorHelperL2Struct.IziSwap memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.IziSwap));
 
     assertEq(data.swapAmount, mockParams.amount * newAmount / oldAmount);
   }
@@ -455,8 +480,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.TraderJoeV2 memory data =
-      abi.decode(depacked, (IExecutorHelperL2.TraderJoeV2));
+    IExecutorHelperL2Struct.TraderJoeV2 memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.TraderJoeV2));
 
     assertEq(data.collectAmount, mockParams.amount * newAmount / oldAmount);
   }
@@ -469,7 +494,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.LevelFiV2 memory data = abi.decode(depacked, (IExecutorHelperL2.LevelFiV2));
+    IExecutorHelperL2Struct.LevelFiV2 memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.LevelFiV2));
 
     assertEq(data.amountIn, mockParams.amount * newAmount / oldAmount);
   }
@@ -482,7 +508,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.GMXGLP memory data = abi.decode(depacked, (IExecutorHelperL2.GMXGLP));
+    IExecutorHelperL2Struct.GMXGLP memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.GMXGLP));
 
     assertEq(data.swapAmount, mockParams.amount * newAmount / oldAmount);
   }
@@ -495,7 +522,7 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.Vooi memory data = abi.decode(depacked, (IExecutorHelperL2.Vooi));
+    IExecutorHelperL2Struct.Vooi memory data = abi.decode(depacked, (IExecutorHelperL2Struct.Vooi));
 
     assertEq(data.fromAmount, mockParams.amount * newAmount / oldAmount);
   }
@@ -512,7 +539,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.VelocoreV2 memory data = abi.decode(depacked, (IExecutorHelperL2.VelocoreV2));
+    IExecutorHelperL2Struct.VelocoreV2 memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.VelocoreV2));
 
     assertEq(data.amount, mockParams.amount * newAmount / oldAmount);
   }
@@ -525,7 +553,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.Kokonut memory data = abi.decode(depacked, (IExecutorHelperL2.Kokonut));
+    IExecutorHelperL2Struct.Kokonut memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.Kokonut));
 
     assertEq(data.dx, mockParams.amount * newAmount / oldAmount);
   }
@@ -542,7 +571,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.BalancerV1 memory data = abi.decode(depacked, (IExecutorHelperL2.BalancerV1));
+    IExecutorHelperL2Struct.BalancerV1 memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.BalancerV1));
 
     assertEq(data.amount, mockParams.amount * newAmount / oldAmount);
   }
@@ -555,7 +585,8 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.BancorV2 memory data = abi.decode(depacked, (IExecutorHelperL2.BancorV2));
+    IExecutorHelperL2Struct.BancorV2 memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.BancorV2));
 
     assertEq(data.amount, mockParams.amount * newAmount / oldAmount);
   }
@@ -568,9 +599,98 @@ contract AssertionHelper is Test {
       nextPool: MOCK_ADDRESS,
       getPoolOnly: false
     });
-    IExecutorHelperL2.Ambient memory data = abi.decode(depacked, (IExecutorHelperL2.Ambient));
+    IExecutorHelperL2Struct.Ambient memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.Ambient));
 
     assertEq(data.qty, mockParams.amount * newAmount / oldAmount);
+  }
+
+  function assertNative(bytes memory dexData, uint256 newAmount, uint256 oldAmount) internal {
+    bytes memory depacked = reader.readNative({
+      data: dexData,
+      tokenIn: mockParams.srcToken,
+      isFirstDex: true,
+      nextPool: MOCK_ADDRESS,
+      getPoolOnly: false
+    });
+    IExecutorHelperL2Struct.Native memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.Native));
+
+    assertEq(data.amount, mockParams.amount * newAmount / oldAmount);
+  }
+
+  function assertBebop(bytes memory dexData, uint256 newAmount, uint256 oldAmount) internal {
+    bytes memory depacked = reader.readBebop({
+      data: dexData,
+      tokenIn: mockParams.srcToken,
+      isFirstDex: true,
+      nextPool: MOCK_ADDRESS,
+      getPoolOnly: false
+    });
+    IExecutorHelperL2Struct.Bebop memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.Bebop));
+
+    assertEq(data.amount, mockParams.amount * newAmount / oldAmount);
+  }
+
+  function assertHashflow(bytes memory dexData, uint256 newAmount, uint256 oldAmount) internal {
+    bytes memory depacked = reader.readHashflow({
+      data: dexData,
+      tokenIn: mockParams.srcToken,
+      isFirstDex: true,
+      nextPool: MOCK_ADDRESS,
+      getPoolOnly: false
+    });
+    IExecutorHelperL2Struct.Hashflow memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.Hashflow));
+
+    assertEq(data.quote.effectiveBaseTokenAmount, mockParams.amount * newAmount / oldAmount);
+  }
+
+  function assertKyberRfq(bytes memory dexData, uint256 newAmount, uint256 oldAmount) internal {
+    bytes memory depacked = reader.readKyberRFQ({
+      data: dexData,
+      tokenIn: mockParams.srcToken,
+      isFirstDex: true,
+      nextPool: MOCK_ADDRESS,
+      getPoolOnly: false
+    });
+    IExecutorHelperL2Struct.KyberRFQ memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.KyberRFQ));
+
+    assertEq(data.amount, mockParams.amount * newAmount / oldAmount);
+  }
+
+  function assertKyberDSLO(bytes memory dexData, uint256 newAmount, uint256 oldAmount) internal {
+    bytes memory depacked = reader.readKyberDSLO({
+      data: dexData,
+      tokenIn: mockParams.srcToken,
+      isFirstDex: true,
+      nextPool: MOCK_ADDRESS,
+      getPoolOnly: false
+    });
+    IExecutorHelperL2Struct.KyberDSLO memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.KyberDSLO));
+
+    assertEq(data.params.takingAmount, mockParams.amount * newAmount / oldAmount);
+  }
+
+  function assertKyberLimitOrder(
+    bytes memory dexData,
+    uint256 newAmount,
+    uint256 oldAmount
+  ) internal {
+    bytes memory depacked = reader.readKyberLimitOrder({
+      data: dexData,
+      tokenIn: mockParams.srcToken,
+      isFirstDex: true,
+      nextPool: MOCK_ADDRESS,
+      getPoolOnly: false
+    });
+    IExecutorHelperL2Struct.KyberLimitOrder memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.KyberLimitOrder));
+
+    assertEq(data.params.takingAmount, mockParams.amount * newAmount / oldAmount);
   }
 
   function excludeSighash(bytes calldata rawData) external returns (bytes memory) {

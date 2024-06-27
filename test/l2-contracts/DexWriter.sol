@@ -1,6 +1,7 @@
 pragma solidity 0.8.25;
 
 import {IExecutorHelperL2} from 'src/interfaces/IExecutorHelperL2.sol';
+import 'forge-std/Test.sol';
 
 /// @title DexWriter
 /// @notice Contain functions to compress DEX structs for L2
@@ -595,6 +596,218 @@ contract DexWriter {
     else shortData = bytes.concat(shortData, bytes1(swap.amount > 0 ? 1 : 0));
 
     shortData = bytes.concat(shortData, bytes20(swap.tokenOut));
+  }
+
+  function writeHashflow(
+    IExecutorHelperL2.Hashflow memory swap,
+    uint256 poolIndex,
+    uint256 sequenceIndex
+  ) external pure returns (bytes memory shortData) {
+    shortData = bytes.concat(shortData, bytes20(swap.router));
+    shortData = bytes.concat(shortData, bytes20(swap.quote.pool));
+    shortData = bytes.concat(shortData, bytes20(swap.quote.externalAccount));
+    shortData = bytes.concat(shortData, bytes20(swap.quote.trader));
+    shortData = bytes.concat(shortData, bytes20(swap.quote.effectiveTrader));
+    shortData = bytes.concat(shortData, bytes20(swap.quote.baseToken));
+    shortData = bytes.concat(shortData, bytes20(swap.quote.quoteToken));
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.quote.effectiveBaseTokenAmount)));
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.quote.baseTokenAmount)));
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.quote.quoteTokenAmount)));
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.quote.quoteExpiry)));
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.quote.nonce)));
+    shortData = bytes.concat(shortData, bytes32((swap.quote.txid)));
+    shortData = bytes.concat(shortData, bytes(swap.quote.signature));
+  }
+
+  function writeKyberRFQ(
+    IExecutorHelperL2.KyberRFQ memory swap,
+    uint256 poolIndex,
+    uint256 sequenceIndex
+  ) external pure returns (bytes memory shortData) {
+    shortData = bytes.concat(shortData, bytes3(uint24(poolIndex)));
+
+    if (poolIndex == 0) shortData = bytes.concat(shortData, bytes20(swap.rfq));
+
+    shortData = bytes.concat(shortData, bytes32(swap.order.info));
+    shortData = bytes.concat(shortData, bytes20(swap.order.makerAsset));
+    shortData = bytes.concat(shortData, bytes20(swap.order.takerAsset));
+    shortData = bytes.concat(shortData, bytes20(swap.order.maker));
+    shortData = bytes.concat(shortData, bytes20(swap.order.allowedSender));
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.order.makingAmount)));
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.order.takingAmount)));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.signature.length)));
+    shortData = bytes.concat(shortData, bytes(swap.signature));
+
+    if (sequenceIndex == 0) shortData = bytes.concat(shortData, bytes16(uint128(swap.amount)));
+    else shortData = bytes.concat(shortData, bytes1(swap.amount > 0 ? 1 : 0));
+
+    shortData = bytes.concat(shortData, bytes20(address(swap.target)));
+  }
+
+  function writeKyberDSLO(
+    IExecutorHelperL2.KyberDSLO memory swap,
+    uint256 poolIndex,
+    uint256 sequenceIndex
+  ) external pure returns (bytes memory shortData) {
+    shortData = bytes.concat(shortData, bytes3(uint24(poolIndex)));
+    if (poolIndex == 0) shortData = bytes.concat(shortData, bytes20(swap.kyberLOAddress));
+
+    shortData = bytes.concat(shortData, bytes20(swap.makerAsset));
+    // shortData = bytes.concat(shortData, bytes20(swap.takerAsset)); // not write taker asset because we using inter data
+
+    shortData = bytes.concat(shortData, bytes1(uint8(1))); // order length
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.params.orders[0].salt)));
+    shortData = bytes.concat(shortData, bytes20(swap.params.orders[0].makerAsset));
+    shortData = bytes.concat(shortData, bytes20(swap.params.orders[0].takerAsset));
+
+    shortData = bytes.concat(shortData, bytes20(swap.params.orders[0].maker));
+    shortData = bytes.concat(shortData, bytes20(swap.params.orders[0].receiver));
+    shortData = bytes.concat(shortData, bytes20(swap.params.orders[0].allowedSender));
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.params.orders[0].makingAmount)));
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.params.orders[0].takingAmount)));
+    shortData = bytes.concat(shortData, bytes25(uint200(swap.params.orders[0].feeConfig)));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.orders[0].makerAssetData.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.orders[0].makerAssetData));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.orders[0].takerAssetData.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.orders[0].takerAssetData));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.orders[0].getMakerAmount.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.orders[0].getMakerAmount));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.orders[0].getTakerAmount.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.orders[0].getTakerAmount));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.orders[0].predicate.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.orders[0].predicate));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.orders[0].interaction.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.orders[0].interaction));
+
+    shortData = bytes.concat(shortData, bytes1(uint8(1))); // signature length
+
+    shortData =
+      bytes.concat(shortData, bytes4(uint32(swap.params.signatures[0].orderSignature.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.signatures[0].orderSignature));
+
+    shortData =
+      bytes.concat(shortData, bytes4(uint32(swap.params.signatures[0].opSignature.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.signatures[0].opSignature));
+
+    shortData = bytes.concat(shortData, bytes1(uint8(1))); // opExpireTimes length
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.opExpireTimes[0])));
+
+    // write takingAmount
+    if (sequenceIndex == 0) {
+      shortData = bytes.concat(shortData, bytes16(uint128(swap.params.takingAmount)));
+    } else {
+      shortData = bytes.concat(shortData, bytes1(swap.params.takingAmount > 0 ? 1 : 0));
+    }
+
+    // write thresholdAmount
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.params.thresholdAmount)));
+
+    // write target
+    shortData = bytes.concat(shortData, bytes20(swap.params.target));
+  }
+
+  function writeKyberLimitOrder(
+    IExecutorHelperL2.KyberLimitOrder memory swap,
+    uint256 poolIndex,
+    uint256 sequenceIndex
+  ) external pure returns (bytes memory shortData) {
+    shortData = bytes.concat(shortData, bytes3(uint24(poolIndex)));
+    if (poolIndex == 0) shortData = bytes.concat(shortData, bytes20(swap.kyberLOAddress));
+
+    shortData = bytes.concat(shortData, bytes20(swap.makerAsset));
+    // shortData = bytes.concat(shortData, bytes20(swap.takerAsset)); // not write taker asset because we using inter data
+
+    shortData = bytes.concat(shortData, bytes1(uint8(1))); // order length
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.params.orders[0].salt)));
+    shortData = bytes.concat(shortData, bytes20(swap.params.orders[0].makerAsset));
+    shortData = bytes.concat(shortData, bytes20(swap.params.orders[0].takerAsset));
+    shortData = bytes.concat(shortData, bytes20(swap.params.orders[0].maker));
+    shortData = bytes.concat(shortData, bytes20(swap.params.orders[0].receiver));
+    shortData = bytes.concat(shortData, bytes20(swap.params.orders[0].allowedSender));
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.params.orders[0].makingAmount)));
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.params.orders[0].takingAmount)));
+    shortData = bytes.concat(shortData, bytes20(swap.params.orders[0].feeRecipient));
+    shortData = bytes.concat(shortData, bytes4(swap.params.orders[0].makerTokenFeePercent));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.orders[0].makerAssetData.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.orders[0].makerAssetData));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.orders[0].takerAssetData.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.orders[0].takerAssetData));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.orders[0].getMakerAmount.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.orders[0].getMakerAmount));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.orders[0].getTakerAmount.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.orders[0].getTakerAmount));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.orders[0].predicate.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.orders[0].predicate));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.orders[0].permit.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.orders[0].permit));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.orders[0].interaction.length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.orders[0].interaction));
+
+    shortData = bytes.concat(shortData, bytes1(uint8(1))); // signature length
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.params.signatures[0].length)));
+    shortData = bytes.concat(shortData, bytes(swap.params.signatures[0]));
+
+    if (sequenceIndex == 0) {
+      shortData = bytes.concat(shortData, bytes16(uint128(swap.params.takingAmount)));
+    } else {
+      shortData = bytes.concat(shortData, bytes1(swap.params.takingAmount > 0 ? 1 : 0));
+    }
+
+    shortData = bytes.concat(shortData, bytes16(uint128(swap.params.thresholdAmount)));
+    shortData = bytes.concat(shortData, bytes20(swap.params.target));
+  }
+
+  function writeNative(
+    IExecutorHelperL2.Native memory swap,
+    uint256 poolIndex,
+    uint256 sequenceIndex
+  ) external pure returns (bytes memory shortData) {
+    shortData = bytes.concat(shortData, bytes3(uint24(poolIndex)));
+    if (poolIndex == 0) shortData = bytes.concat(shortData, bytes20(swap.target));
+
+    if (sequenceIndex == 0) shortData = bytes.concat(shortData, bytes16(uint128(swap.amount)));
+    else shortData = bytes.concat(shortData, bytes1(swap.amount > 0 ? 1 : 0));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.data.length)));
+    shortData = bytes.concat(shortData, bytes(swap.data));
+
+    shortData = bytes.concat(shortData, bytes20(swap.tokenIn));
+    shortData = bytes.concat(shortData, bytes20(swap.tokenOut));
+    shortData = bytes.concat(shortData, bytes20(swap.recipient));
+    shortData = bytes.concat(shortData, bytes32(swap.multihopAndOffset));
+  }
+
+  function writeBebop(
+    IExecutorHelperL2.Bebop memory swap,
+    uint256 poolIndex,
+    uint256 sequenceIndex
+  ) external pure returns (bytes memory shortData) {
+    shortData = bytes.concat(shortData, bytes3(uint24(poolIndex)));
+    if (poolIndex == 0) shortData = bytes.concat(shortData, bytes20(swap.pool));
+
+    if (sequenceIndex == 0) shortData = bytes.concat(shortData, bytes16(uint128(swap.amount)));
+    else shortData = bytes.concat(shortData, bytes1(swap.amount > 0 ? 1 : 0));
+
+    shortData = bytes.concat(shortData, bytes4(uint32(swap.data.length)));
+    shortData = bytes.concat(shortData, bytes(swap.data));
+
+    shortData = bytes.concat(shortData, bytes20(swap.tokenIn));
+    shortData = bytes.concat(shortData, bytes20(swap.tokenOut));
+    shortData = bytes.concat(shortData, bytes20(swap.recipient));
   }
 
   /*

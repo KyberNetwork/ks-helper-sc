@@ -287,12 +287,20 @@ library ScalingDataL2Lib {
     return data.scaleNative(oldAmount, newAmount);
   }
 
-  function newDSLO(
+  function newKyberDSLO(
     bytes memory data,
     uint256 oldAmount,
     uint256 newAmount
   ) internal pure returns (bytes memory) {
     return data.scaleDSLO(oldAmount, newAmount);
+  }
+
+  function newKyberLimitOrder(
+    bytes memory data,
+    uint256 oldAmount,
+    uint256 newAmount
+  ) internal pure returns (bytes memory) {
+    return data.scaleKyberLimitOrder(oldAmount, newAmount);
   }
 
   function newHashflow(

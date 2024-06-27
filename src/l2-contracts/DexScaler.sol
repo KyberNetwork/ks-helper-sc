@@ -3,9 +3,12 @@ pragma solidity 0.8.25;
 
 import {CalldataReader} from 'src/l2-contracts/CalldataReader.sol';
 import {IExecutorHelperL2} from 'src/interfaces/IExecutorHelperL2.sol';
+import {IExecutorHelperL2Struct} from 'src/interfaces/IExecutorHelperL2Struct.sol';
 import {IBebopV3} from 'src/interfaces/pools/IBebopV3.sol';
 import {BytesHelper} from 'src/l2-contracts/BytesHelper.sol';
 import {Common} from 'src/l2-contracts/Common.sol';
+import {IKyberDSLO} from 'src/interfaces/pools/IKyberDSLO.sol';
+import {IKyberLO} from 'src/interfaces/pools/IKyberLO.sol';
 
 /// @title DexScaler
 /// @notice Contain functions to scale DEX structs
@@ -510,7 +513,7 @@ library DexScaler {
 
     (, startByte) = data._readPool(startByte); // orderbook
 
-    (uint128 amount,) = data._readUint128(startByte); // amount
+    (uint256 amount,) = data._readUint128AsUint256(startByte); // amount
 
     return data.write16Bytes(
       startByte, oldAmount == 0 ? 0 : (amount * newAmount) / oldAmount, 'scaleLighterV2'
@@ -523,10 +526,9 @@ library DexScaler {
     uint256 newAmount
   ) internal pure returns (bytes memory) {
     uint256 startByte;
-
     (, startByte) = data._readPool(startByte); // pool
 
-    (uint128 amount,) = data._readUint128(startByte); // amount
+    (uint256 amount,) = data._readUint128AsUint256(startByte); // amount
 
     return data.write16Bytes(
       startByte, oldAmount == 0 ? 0 : (amount * newAmount) / oldAmount, 'scaleMaiPSM'
@@ -539,16 +541,11 @@ library DexScaler {
     uint256 newAmount
   ) internal pure returns (bytes memory) {
     uint256 startByte;
-
     (, startByte) = data._readPool(startByte); // rfq
-
     (, startByte) = data._readOrderRFQ(startByte); // order
-
     (, startByte) = data._readBytes(startByte); // signature
-
-    (uint256 amount,) = data._readUint256(startByte); // amount
-
-    return data.write32Bytes(
+    (uint256 amount,) = data._readUint128AsUint256(startByte); // amount
+    return data.write16Bytes(
       startByte, oldAmount == 0 ? 0 : (amount * newAmount) / oldAmount, 'scaleKyberRFQ'
     );
   }
@@ -560,26 +557,54 @@ library DexScaler {
   ) internal pure returns (bytes memory) {
     uint256 startByte;
 
-    (, startByte) = data._readAddress(startByte); // kyberLOAddress
+    (, startByte) = data._readPool(startByte); // kyberLOAddress
 
     (, startByte) = data._readAddress(startByte); // makerAsset
 
-    (, startByte) = data._readAddress(startByte); // takerAsset
+    // (, startByte) = data._readAddress(startByte); // don't have takerAsset
 
     (
       IKyberDSLO.FillBatchOrdersParams memory params,
       ,
       uint256 takingAmountStartByte,
       uint256 thresholdStartByte
-    ) = data._readFillBatchOrdersParams(startByte); // FillBatchOrdersParams
+    ) = data._readDSLOFillBatchOrdersParams(startByte); // FillBatchOrdersParams
 
-    data = data.write32Bytes(
+    data = data.write16Bytes(
       takingAmountStartByte,
       oldAmount == 0 ? 0 : (params.takingAmount * newAmount) / oldAmount,
       'scaleDSLO'
     );
 
-    return data.write32Bytes(thresholdStartByte, 1, 'scaleThreshold');
+    return data.write16Bytes(thresholdStartByte, 1, 'scaleThreshold');
+  }
+
+  function scaleKyberLimitOrder(
+    bytes memory data,
+    uint256 oldAmount,
+    uint256 newAmount
+  ) internal pure returns (bytes memory) {
+    uint256 startByte;
+
+    (, startByte) = data._readPool(startByte); // kyberLOAddress
+
+    (, startByte) = data._readAddress(startByte); // makerAsset
+
+    // (, startByte) = data._readAddress(startByte); // takerAsset
+
+    (
+      IKyberLO.FillBatchOrdersParams memory params,
+      ,
+      uint256 takingAmountStartByte,
+      uint256 thresholdStartByte
+    ) = data._readLOFillBatchOrdersParams(startByte); // FillBatchOrdersParams
+
+    data = data.write16Bytes(
+      takingAmountStartByte,
+      oldAmount == 0 ? 0 : (params.takingAmount * newAmount) / oldAmount,
+      'scaleLO'
+    );
+    return data.write16Bytes(thresholdStartByte, 1, 'scaleThreshold');
   }
 
   function scaleHashflow(
@@ -594,7 +619,7 @@ library DexScaler {
     (IExecutorHelperL2.RFQTQuote memory rfqQuote,, uint256 ebtaStartByte) =
       data._readRFQTQuote(startByte); // RFQTQuote
 
-    return data.write32Bytes(
+    return data.write16Bytes(
       ebtaStartByte,
       oldAmount == 0 ? 0 : (rfqQuote.effectiveBaseTokenAmount * newAmount) / oldAmount,
       'scaleHashflow'
@@ -615,7 +640,7 @@ library DexScaler {
     uint256 strDataStartByte;
 
     (, startByte) = data._readAddress(startByte); // target
-    (amount, startByte) = data._readUint256(startByte); // amount
+    (amount, startByte) = data._readUint128AsUint256(startByte); // amount
     (strData, startByte) = data._readBytes(startByte); // data
     strDataStartByte = startByte;
     (, startByte) = data._readAddress(startByte); // tokenIn
@@ -655,7 +680,7 @@ library DexScaler {
 
     (, startByte) = data._readAddress(startByte); // pool
 
-    (amount, startByte) = data._readUint256(startByte); // amount
+    (amount, startByte) = data._readUint128AsUint256(startByte); // amount
     amountStartByte = startByte;
     (txData, startByte) = data._readBytes(startByte); // data
 

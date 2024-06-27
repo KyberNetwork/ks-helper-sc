@@ -10,6 +10,8 @@ import {DexWriter} from './DexWriter.sol';
 import {AssertionHelper} from './AssertionHelper.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/interfaces/IERC20.sol';
 import {CalldataWriter} from 'src/l2-contracts/CalldataWriter.sol';
+import {IKyberLO} from 'src/interfaces/pools/IKyberLO.sol';
+import {IKyberDSLO} from 'src/interfaces/pools/IKyberDSLO.sol';
 
 contract TestDataWriter is AssertionHelper {
   DexWriter writer = new DexWriter();
@@ -166,6 +168,18 @@ contract TestDataWriter is AssertionHelper {
       fn = _createLighterV2;
     } else if (dexType == InputScalingHelperL2.DexIndex.MaiPSM) {
       fn = _createMaiPSM;
+    } else if (dexType == InputScalingHelperL2.DexIndex.Hashflow) {
+      fn = _createHashflow;
+    } else if (dexType == InputScalingHelperL2.DexIndex.KyberLimitOrder) {
+      fn = _createKyberLimitOrder;
+    } else if (dexType == InputScalingHelperL2.DexIndex.KyberDSLO) {
+      fn = _createKyberDSLO;
+    } else if (dexType == InputScalingHelperL2.DexIndex.KyberRFQ) {
+      fn = _createKyberRfq;
+    } else if (dexType == InputScalingHelperL2.DexIndex.Native) {
+      fn = _createNative;
+    } else if (dexType == InputScalingHelperL2.DexIndex.Bebop) {
+      fn = _createBebop;
     } else {
       // do nothing, since we need to check revert condition from InputScalingHelperL2 contract
       swap.data = bytes('mock data');
@@ -563,5 +577,70 @@ contract TestDataWriter is AssertionHelper {
     IExecutorHelperL2.FrxETH memory data;
     data.amount = uint128(mockParams.amount);
     swap.data = writer.writeMaiPSM({swap: data, poolIndex: 0, sequenceIndex: sequenceIndex});
+  }
+
+  function _createHashflow(uint256 sequenceIndex)
+    internal
+    view
+    returns (IExecutorL2.Swap memory swap)
+  {
+    IExecutorHelperL2.Hashflow memory data;
+    data.quote.effectiveBaseTokenAmount = uint128(mockParams.amount);
+    swap.data = writer.writeHashflow({swap: data, poolIndex: 0, sequenceIndex: sequenceIndex});
+  }
+
+  function _createKyberRfq(uint256 sequenceIndex)
+    internal
+    view
+    returns (IExecutorL2.Swap memory swap)
+  {
+    IExecutorHelperL2.KyberRFQ memory data;
+    data.amount = uint128(mockParams.amount);
+    swap.data = writer.writeKyberRFQ({swap: data, poolIndex: 0, sequenceIndex: sequenceIndex});
+  }
+
+  function _createKyberDSLO(uint256 sequenceIndex)
+    internal
+    view
+    returns (IExecutorL2.Swap memory swap)
+  {
+    IExecutorHelperL2.KyberDSLO memory data;
+    data.params.takingAmount = uint128(mockParams.amount);
+
+    data.params.orders = new IKyberDSLO.Order[](1);
+    data.params.signatures = new IKyberDSLO.Signature[](1);
+    data.params.opExpireTimes = new uint32[](1);
+
+    swap.data = writer.writeKyberDSLO({swap: data, poolIndex: 0, sequenceIndex: sequenceIndex});
+  }
+
+  function _createKyberLimitOrder(uint256 sequenceIndex)
+    internal
+    view
+    returns (IExecutorL2.Swap memory swap)
+  {
+    IExecutorHelperL2.KyberLimitOrder memory data;
+    data.params.takingAmount = uint128(mockParams.amount);
+
+    data.params.orders = new IKyberLO.Order[](1);
+    data.params.signatures = new bytes[](1);
+    swap.data =
+      writer.writeKyberLimitOrder({swap: data, poolIndex: 0, sequenceIndex: sequenceIndex});
+  }
+
+  function _createNative(uint256 sequenceIndex)
+    internal
+    view
+    returns (IExecutorL2.Swap memory swap)
+  {
+    IExecutorHelperL2.Native memory data;
+    data.amount = uint128(mockParams.amount);
+    swap.data = writer.writeNative({swap: data, poolIndex: 0, sequenceIndex: sequenceIndex});
+  }
+
+  function _createBebop(uint256 sequenceIndex) internal view returns (IExecutorL2.Swap memory swap) {
+    IExecutorHelperL2.Bebop memory data;
+    data.amount = uint128(mockParams.amount);
+    swap.data = writer.writeBebop({swap: data, poolIndex: 0, sequenceIndex: sequenceIndex});
   }
 }
