@@ -744,4 +744,18 @@ library DexScaler {
       startByte, oldAmount == 0 ? 0 : (amount * newAmount) / oldAmount, 'scaleSymbioticLRT'
     );
   }
+
+  function scaleMaverickV2(
+    bytes memory data,
+    uint256 oldAmount,
+    uint256 newAmount
+  ) internal pure returns (bytes memory) {
+    uint256 startByte;
+    // decode
+    (, startByte) = data._readPool(startByte);
+    (uint256 collectAmount,) = data._readUint128AsUint256(startByte);
+    return data.write16Bytes(
+      startByte, oldAmount == 0 ? 0 : (collectAmount * newAmount) / oldAmount, 'scaleMaverickV2'
+    );
+  }
 }

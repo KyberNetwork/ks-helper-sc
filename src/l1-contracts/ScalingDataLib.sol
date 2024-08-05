@@ -624,4 +624,15 @@ library ScalingDataLib {
     structData.amount = (structData.amount * newAmount) / oldAmount;
     return abi.encode(structData);
   }
+
+  function newMaverickV2(
+    bytes memory data,
+    uint256 oldAmount,
+    uint256 newAmount
+  ) internal pure returns (bytes memory) {
+    IExecutorHelperStruct.MaverickV2 memory structData =
+      abi.decode(data, (IExecutorHelperStruct.MaverickV2));
+    structData.collectAmount = (structData.collectAmount * newAmount) / oldAmount;
+    return abi.encode(structData);
+  }
 }

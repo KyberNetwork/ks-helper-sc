@@ -741,4 +741,23 @@ contract DexScalersTest is Test {
     assertTrue(compressed.length == scaled.length, 'data should not change length');
     assertEq(swapScaled.amount, (swap.amount * newAmount) / oldAmount, 'results are not eq');
   }
+
+  function test_scaleMaverickV2(uint128 oldAmount, uint128 newAmount, uint8 recipientFlag) public {
+    _assumeConditions(oldAmount, newAmount, recipientFlag);
+    IExecutorHelperL2Struct.MaverickV2 memory swap;
+    swap.collectAmount = oldAmount;
+
+    bytes memory compressed = writer.writeMaverickV2(swap, 0, 0, recipientFlag);
+    bytes memory scaled = compressed.newMaverickV2(oldAmount, newAmount);
+
+    IExecutorHelperL2Struct.MaverickV2 memory swapScaled = abi.decode(
+      reader.readMaverickV2(scaled, MOCK_ADDRESS, true, MOCK_ADDRESS, false),
+      (IExecutorHelperL2Struct.MaverickV2)
+    );
+
+    assertTrue(compressed.length == scaled.length, 'data should not change length');
+    assertEq(
+      swapScaled.collectAmount, (swap.collectAmount * newAmount) / oldAmount, 'results are not eq'
+    );
+  }
 }

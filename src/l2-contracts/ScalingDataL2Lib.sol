@@ -342,4 +342,12 @@ library ScalingDataL2Lib {
   ) internal pure returns (bytes memory) {
     return data.scaleSymbioticLRT(oldAmount, newAmount);
   }
+
+  function newMaverickV2(
+    bytes memory data,
+    uint256 oldAmount,
+    uint256 newAmount
+  ) internal pure returns (bytes memory) {
+    return data.scaleMaverickV2(oldAmount, newAmount);
+  }
 }

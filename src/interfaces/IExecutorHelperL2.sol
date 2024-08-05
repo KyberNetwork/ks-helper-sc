@@ -462,4 +462,13 @@ interface IExecutorHelperL2 is IExecutorHelperL2Struct {
     bool getPoolOnly,
     address nextPool
   ) external payable returns (address tokenOut, uint256 tokenAmountOut, address pool);
+
+  function executeMaverickV2(
+    uint256 index,
+    bytes memory data,
+    uint256 previousAmountOut,
+    address tokenIn,
+    bool getPoolOnly,
+    address nextPool
+  ) external payable returns (address tokenOut, uint256 tokenAmountOut, address pool);
 }

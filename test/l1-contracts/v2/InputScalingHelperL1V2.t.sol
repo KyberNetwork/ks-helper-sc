@@ -17,7 +17,7 @@ contract InputScalingHelperL1V2Test is TestDataWriter {
   uint16 DEX_NUM;
 
   function _getFuncSelectorList() internal pure returns (bytes4[] memory funcSelectorList) {
-    funcSelectorList = new bytes4[](69);
+    funcSelectorList = new bytes4[](70);
     funcSelectorList[0] = IExecutorHelper.executeUniswap.selector;
     funcSelectorList[1] = IExecutorHelper.executeStableSwap.selector;
     funcSelectorList[2] = IExecutorHelper.executeCurve.selector;
@@ -87,6 +87,7 @@ contract InputScalingHelperL1V2Test is TestDataWriter {
     funcSelectorList[66] = IExecutorHelper.executeKyberDSLO.selector;
     funcSelectorList[67] = IExecutorHelper.executeKyberLimitOrder.selector;
     funcSelectorList[68] = IExecutorHelper.executeSymbioticLRT.selector;
+    funcSelectorList[69] = IExecutorHelper.executeMaverickV2.selector;
   }
 
   function setUp() public {

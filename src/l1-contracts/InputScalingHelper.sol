@@ -302,6 +302,8 @@ contract InputScalingHelper {
         swap.data = ScalingDataLib.newBebop(swap.data, oldAmount, newAmount);
       } else if (functionSelector == IExecutorHelper.executeSymbioticLRT.selector) {
         swap.data = ScalingDataLib.newSymbioticLRT(swap.data, oldAmount, newAmount);
+      } else if (functionSelector == IExecutorHelper.executeMaverickV2.selector) {
+        swap.data = ScalingDataLib.newMaverickV2(swap.data, oldAmount, newAmount);
       } else {
         // SwaapV2
         revert('AggregationExecutor: Dex type not supported');

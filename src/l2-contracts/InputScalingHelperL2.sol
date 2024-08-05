@@ -76,7 +76,8 @@ contract InputScalingHelperL2 {
     Bebop, // 46
     MantleUsd,
     MaiPSM, // 48
-    SymbioticLRT
+    SymbioticLRT,
+    MaverickV2
   }
 
   function getScaledInputData(
@@ -344,6 +345,8 @@ contract InputScalingHelperL2 {
       swap.data = swap.data.newMantleUsd(oldAmount, newAmount);
     } else if (DexIndex(functionSelectorIndex) == DexIndex.SymbioticLRT) {
       swap.data = swap.data.newSymbioticLRT(oldAmount, newAmount);
+    } else if (DexIndex(functionSelectorIndex) == DexIndex.MaverickV2) {
+      swap.data = swap.data.newMaverickV2(oldAmount, newAmount);
     } else if (DexIndex(functionSelectorIndex) == DexIndex.SwaapV2) {
       revert('InputScalingHelper: Can not scale SwaapV2 swap');
     } else {

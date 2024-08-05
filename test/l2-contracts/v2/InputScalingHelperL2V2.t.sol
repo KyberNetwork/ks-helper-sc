@@ -23,7 +23,7 @@ contract InputScalingHelperL2V2Test is DataWriterL2V2 {
   uint256[] arrDexNameIndex = [38]; // swaapv2
 
   function _getFuncSelectorList() internal pure returns (bytes4[] memory funcSelectorList) {
-    funcSelectorList = new bytes4[](51);
+    funcSelectorList = new bytes4[](52);
     funcSelectorList[0] = IExecutorHelperL2.executeUniswap.selector;
     funcSelectorList[1] = IExecutorHelperL2.executeKSClassic.selector;
     funcSelectorList[2] = IExecutorHelperL2.executeVelodrome.selector;
@@ -75,6 +75,7 @@ contract InputScalingHelperL2V2Test is DataWriterL2V2 {
     funcSelectorList[48] = IExecutorHelperL2.executeMaiPSM.selector;
     funcSelectorList[49] = IExecutorHelperL2.executeKelp.selector;
     funcSelectorList[50] = IExecutorHelperL2.executeSymbioticLRT.selector;
+    funcSelectorList[51] = IExecutorHelperL2.executeMaverickV2.selector;
   }
 
   function setUp() public {
