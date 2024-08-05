@@ -446,4 +446,12 @@ interface IExecutorHelperStruct {
     address recipient;
     bool isVer0;
   }
+
+  struct MaverickV2 {
+    address pool;
+    uint256 collectAmount; // amount that should be transferred to the pool
+    address tokenIn;
+    address tokenOut;
+    address recipient;
+  }
 }

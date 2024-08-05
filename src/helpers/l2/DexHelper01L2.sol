@@ -1240,4 +1240,24 @@ contract DexHelper01L2 {
       startByte, oldAmount == 0 ? 0 : (amount * newAmount) / oldAmount, 'scaleSymbioticLRT'
     );
   }
+
+  function executeMaverickV2(
+    uint256,
+    bytes memory scalingData,
+    uint256,
+    address,
+    bool,
+    address
+  ) external pure returns (bytes memory) {
+    (bytes memory _data, uint256 oldAmount, uint256 newAmount) =
+      abi.decode(scalingData, (bytes, uint256, uint256));
+
+    uint256 startByte;
+    // decode
+    (, startByte) = _data._readPool(startByte);
+    (uint256 collectAmount,) = _data._readUint128AsUint256(startByte);
+    return _data.write16Bytes(
+      startByte, oldAmount == 0 ? 0 : (collectAmount * newAmount) / oldAmount, 'scaleMaverickV2'
+    );
+  }
 }

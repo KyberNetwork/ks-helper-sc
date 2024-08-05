@@ -208,6 +208,8 @@ contract AssertionHelperL2V2 is Test {
       fn = assertHashflow;
     } else if (dexName == BaseConfig.DexName.SymbioticLRT) {
       fn = assertSymbioticLRTData;
+    } else if (dexName == BaseConfig.DexName.MaverickV2) {
+      fn = assertMaverickV2Data;
     } else {
       fn = assertNothing;
       // do nothing, since we need to check revert condition from InputScalingHelperL2 contract
@@ -715,6 +717,24 @@ contract AssertionHelperL2V2 is Test {
       abi.decode(depacked, (IExecutorHelperL2Struct.SymbioticLRT));
 
     assertEq(data.amount, mockParams.amount * newAmount / oldAmount);
+  }
+
+  function assertMaverickV2Data(
+    bytes memory dexData,
+    uint256 newAmount,
+    uint256 oldAmount
+  ) internal {
+    bytes memory depacked = reader.readMaverickV2({
+      data: dexData,
+      tokenIn: mockParams.srcToken,
+      isFirstDex: true,
+      nextPool: MOCK_ADDRESS,
+      getPoolOnly: false
+    });
+    IExecutorHelperL2Struct.MaverickV2 memory data =
+      abi.decode(depacked, (IExecutorHelperL2Struct.MaverickV2));
+
+    assertEq(data.collectAmount, mockParams.amount * newAmount / oldAmount);
   }
 
   function excludeSighash(bytes calldata rawData) external pure returns (bytes memory) {

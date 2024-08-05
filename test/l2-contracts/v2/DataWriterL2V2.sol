@@ -181,6 +181,8 @@ contract DataWriterL2V2 is AssertionHelperL2V2 {
       fn = _createMantleUsd;
     } else if (dexName == BaseConfig.DexName.SymbioticLRT) {
       fn = _createSymbioticLRT;
+    } else if (dexName == BaseConfig.DexName.MaverickV2) {
+      fn = _createMaverickV2;
     } else {
       // do nothing, since we need to check revert condition from InputScalingHelperL2 contract
       swap.data = bytes('mock data');
@@ -668,6 +670,21 @@ contract DataWriterL2V2 is AssertionHelperL2V2 {
     IExecutorHelperL2.SymbioticLRT memory data;
     data.amount = mockParams.amount;
     swap.data = writer.writeSymbioticLRT({
+      swap: data,
+      poolIndex: 0,
+      sequenceIndex: sequenceIndex,
+      recipientFlag: mockParams.recipientFlag
+    });
+  }
+
+  function _createMaverickV2(uint256 sequenceIndex)
+    internal
+    view
+    returns (IExecutorL2.Swap memory swap)
+  {
+    IExecutorHelperL2.MaverickV2 memory data;
+    data.collectAmount = mockParams.amount;
+    swap.data = writer.writeMaverickV2({
       swap: data,
       poolIndex: 0,
       sequenceIndex: sequenceIndex,

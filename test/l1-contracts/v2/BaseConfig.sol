@@ -73,6 +73,7 @@ contract BaseConfig {
     BedrockUniETH,
     MaiPSM,
     PufferFinance,
-    SymbioticLRT
+    SymbioticLRT,
+    MaverickV2
   }
 }
